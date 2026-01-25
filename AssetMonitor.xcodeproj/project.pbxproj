@@ -6,14 +6,57 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EB82E08C2F22C6FE0090614D /* SharedDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB82E08A2F22C6FE0090614D /* SharedDataManager.swift */; };
+		EB82E08F2F22C75D0090614D /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EB82E08E2F22C75D0090614D /* libsqlite3.tbd */; };
+		EB82E09B2F230B950090614D /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB82E09A2F230B950090614D /* WidgetKit.framework */; };
+		EB82E09D2F230B950090614D /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB82E09C2F230B950090614D /* SwiftUI.framework */; };
+		EB82E0AA2F230B960090614D /* AssetMonitorWidgetExtensionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EB82E0992F230B950090614D /* AssetMonitorWidgetExtensionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EB82E0A82F230B960090614D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EB82E0312F22C5BD0090614D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EB82E0982F230B950090614D;
+			remoteInfo = AssetMonitorWidgetExtensionExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EB82E0AF2F230B960090614D /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				EB82E0AA2F230B960090614D /* AssetMonitorWidgetExtensionExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		EB82E0392F22C5BD0090614D /* AssetMonitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AssetMonitor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB82E08A2F22C6FE0090614D /* SharedDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedDataManager.swift; sourceTree = "<group>"; };
+		EB82E08E2F22C75D0090614D /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		EB82E0992F230B950090614D /* AssetMonitorWidgetExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AssetMonitorWidgetExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB82E09A2F230B950090614D /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		EB82E09C2F230B950090614D /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		EB82E0B32F230D1C0090614D /* AssetMonitorWidgetExtensionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AssetMonitorWidgetExtensionExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		EB82E03B2F22C5BD0090614D /* AssetMonitor */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = AssetMonitor;
+			sourceTree = "<group>";
+		};
+		EB82E09E2F230B950090614D /* AssetMonitorWidgetExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AssetMonitorWidgetExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +66,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB82E08F2F22C75D0090614D /* libsqlite3.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EB82E0962F230B950090614D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB82E09D2F230B950090614D /* SwiftUI.framework in Frameworks */,
+				EB82E09B2F230B950090614D /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32,7 +85,11 @@
 		EB82E0302F22C5BD0090614D = {
 			isa = PBXGroup;
 			children = (
+				EB82E0B32F230D1C0090614D /* AssetMonitorWidgetExtensionExtension.entitlements */,
+				EB82E08B2F22C6FE0090614D /* Shared */,
 				EB82E03B2F22C5BD0090614D /* AssetMonitor */,
+				EB82E09E2F230B950090614D /* AssetMonitorWidgetExtension */,
+				EB82E08D2F22C75D0090614D /* Frameworks */,
 				EB82E03A2F22C5BD0090614D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,8 +98,27 @@
 			isa = PBXGroup;
 			children = (
 				EB82E0392F22C5BD0090614D /* AssetMonitor.app */,
+				EB82E0992F230B950090614D /* AssetMonitorWidgetExtensionExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		EB82E08B2F22C6FE0090614D /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				EB82E08A2F22C6FE0090614D /* SharedDataManager.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		EB82E08D2F22C75D0090614D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EB82E08E2F22C75D0090614D /* libsqlite3.tbd */,
+				EB82E09A2F230B950090614D /* WidgetKit.framework */,
+				EB82E09C2F230B950090614D /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -55,10 +131,12 @@
 				EB82E0352F22C5BD0090614D /* Sources */,
 				EB82E0362F22C5BD0090614D /* Frameworks */,
 				EB82E0372F22C5BD0090614D /* Resources */,
+				EB82E0AF2F230B960090614D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				EB82E0A92F230B960090614D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				EB82E03B2F22C5BD0090614D /* AssetMonitor */,
@@ -69,6 +147,28 @@
 			productName = AssetMonitor;
 			productReference = EB82E0392F22C5BD0090614D /* AssetMonitor.app */;
 			productType = "com.apple.product-type.application";
+		};
+		EB82E0982F230B950090614D /* AssetMonitorWidgetExtensionExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EB82E0AC2F230B960090614D /* Build configuration list for PBXNativeTarget "AssetMonitorWidgetExtensionExtension" */;
+			buildPhases = (
+				EB82E0952F230B950090614D /* Sources */,
+				EB82E0962F230B950090614D /* Frameworks */,
+				EB82E0972F230B950090614D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				EB82E09E2F230B950090614D /* AssetMonitorWidgetExtension */,
+			);
+			name = AssetMonitorWidgetExtensionExtension;
+			packageProductDependencies = (
+			);
+			productName = AssetMonitorWidgetExtensionExtension;
+			productReference = EB82E0992F230B950090614D /* AssetMonitorWidgetExtensionExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +181,9 @@
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					EB82E0382F22C5BD0090614D = {
+						CreatedOnToolsVersion = 26.1;
+					};
+					EB82E0982F230B950090614D = {
 						CreatedOnToolsVersion = 26.1;
 					};
 				};
@@ -100,12 +203,20 @@
 			projectRoot = "";
 			targets = (
 				EB82E0382F22C5BD0090614D /* AssetMonitor */,
+				EB82E0982F230B950090614D /* AssetMonitorWidgetExtensionExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		EB82E0372F22C5BD0090614D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EB82E0972F230B950090614D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -119,10 +230,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB82E08C2F22C6FE0090614D /* SharedDataManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EB82E0952F230B950090614D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EB82E0A92F230B960090614D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EB82E0982F230B950090614D /* AssetMonitorWidgetExtensionExtension */;
+			targetProxy = EB82E0A82F230B960090614D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		EB82E0422F22C5BE0090614D /* Debug */ = {
@@ -248,19 +375,31 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AssetMonitor/AssetMonitor.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = KNZTML8AR3;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Jin Wook Shin. All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = JinWookShin.AssetMonitor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -278,25 +417,103 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AssetMonitor/AssetMonitor.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = KNZTML8AR3;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Jin Wook Shin. All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = JinWookShin.AssetMonitor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		EB82E0AD2F230B960090614D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AssetMonitorWidgetExtensionExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = KNZTML8AR3;
+				ENABLE_APP_SANDBOX = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AssetMonitorWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AssetMonitorWidgetExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Jin Wook Shin. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0.3;
+				PRODUCT_BUNDLE_IDENTIFIER = JinWookShin.AssetMonitor.AssetMonitorWidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		EB82E0AE2F230B960090614D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AssetMonitorWidgetExtensionExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = KNZTML8AR3;
+				ENABLE_APP_SANDBOX = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AssetMonitorWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AssetMonitorWidgetExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Jin Wook Shin. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0.3;
+				PRODUCT_BUNDLE_IDENTIFIER = JinWookShin.AssetMonitor.AssetMonitorWidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -320,6 +537,15 @@
 			buildConfigurations = (
 				EB82E0452F22C5BE0090614D /* Debug */,
 				EB82E0462F22C5BE0090614D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EB82E0AC2F230B960090614D /* Build configuration list for PBXNativeTarget "AssetMonitorWidgetExtensionExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EB82E0AD2F230B960090614D /* Debug */,
+				EB82E0AE2F230B960090614D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

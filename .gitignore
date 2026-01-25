@@ -1,0 +1,61 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdatad/
+xcuserdata/
+
+# Build artifacts
+*.dmg
+*.app
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Release builds
+Release/
+
+# Personal data - database files
+*.db
+*.sqlite
+*.sqlite3
+
+# App data directories (contains personal portfolio data)
+# These are in ~/Library/Application Support/AssetMonitor/
+
+# Environment and secrets
+.env
+*.pem
+*.p12
+*.key
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Thumbnails
+Thumbs.db
+
+# IDEs
+.idea/
+*.swp
+*.swo
+*~
+
+# Swift Package Manager
+.build/
+Packages/
+Package.resolved
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
