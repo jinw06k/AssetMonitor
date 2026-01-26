@@ -181,7 +181,7 @@ struct LargePortfolioView: View {
     let entry: PortfolioEntry
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
@@ -217,8 +217,12 @@ struct LargePortfolioView: View {
                 }
             }
             Divider()
-            Text("Holdings").font(.caption).foregroundColor(.secondary)
-            ForEach(entry.holdings.prefix(6), id: \.symbol) { holding in
+            HStack {
+                Text("Holdings").font(.caption).foregroundColor(.secondary)
+                Spacer()
+                Text("\(entry.holdings.count) assets").font(.caption2).foregroundColor(.secondary)
+            }
+            ForEach(entry.holdings.prefix(10), id: \.symbol) { holding in
                 HStack {
                     Text(holding.symbol).fontWeight(.medium)
                     Spacer()

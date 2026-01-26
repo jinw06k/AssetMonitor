@@ -112,7 +112,7 @@ class SharedDataManager {
 
         let topHoldings = assets
             .sorted { $0.totalValue > $1.totalValue }
-            .prefix(6)
+            .prefix(12)
             .map { asset in
                 WidgetHoldingData(
                     symbol: asset.symbol,
