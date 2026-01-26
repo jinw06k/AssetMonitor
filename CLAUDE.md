@@ -1,6 +1,6 @@
 # AssetMonitor - AI Agent Guide
 
-> **Version**: 1.0.6 | **Updated**: January 25, 2026
+> **Version**: 1.0.7 | **Updated**: January 25, 2026
 
 ## Quick Reference
 
@@ -144,6 +144,12 @@ defaults read ~/Library/Group\ Containers/group.JinWookShin.AssetMonitor/Library
 
 ## Version History
 
+### 1.0.7 (Jan 25, 2026)
+- Theme System Compliance: Fixed all 62 hardcoded color/spacing/radius violations
+- Large Portfolio Widget: Now displays up to 10 holdings (up from 6)
+- Widget sync: Syncs up to 12 holdings for better coverage
+- Fixed PlansView "Status" label line-break issue
+
 ### 1.0.6 (Jan 25, 2026)
 - Privacy Mode: hide dollar amounts, show percentages only (Settings or menu bar toggle)
 - Widgets and menu bar respect privacy mode
@@ -162,10 +168,6 @@ defaults read ~/Library/Group\ Containers/group.JinWookShin.AssetMonitor/Library
 - Initial release
 
 ---
-
-## Known Issues
-
-- **PlansView.swift**: "Status" label breaks into two lines. Needs `.lineLimit(1)`.
 
 ## Limitations
 
