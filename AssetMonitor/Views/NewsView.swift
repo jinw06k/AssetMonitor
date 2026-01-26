@@ -212,7 +212,7 @@ struct NewsCardWithImage: View {
                     } else {
                         // No image placeholder
                         RoundedRectangle(cornerRadius: Theme.CornerRadius.medium)
-                            .fill(Color.blue.opacity(0.1))
+                            .fill(Color.accentColor.opacity(0.1))
                             .frame(width: 120, height: 80)
                             .overlay(
                                 Image(systemName: "newspaper.fill")
@@ -230,8 +230,8 @@ struct NewsCardWithImage: View {
                         .fontWeight(.bold)
                         .padding(.horizontal, Theme.Spacing.sm)
                         .padding(.vertical, Theme.Spacing.xxs)
-                        .background(Color.blue.opacity(0.15))
-                        .foregroundColor(.blue)
+                        .background(Color.accentColor.opacity(0.15))
+                        .foregroundColor(.accentColor)
                         .cornerRadius(Theme.CornerRadius.small)
 
                     Text(news.title)
@@ -259,7 +259,7 @@ struct NewsCardWithImage: View {
 
                         Image(systemName: "arrow.up.right")
                             .font(.caption)
-                            .foregroundColor(.blue)
+                            .foregroundColor(.accentColor)
                             .opacity(isHovered ? 1 : 0.5)
                     }
                 }
@@ -270,7 +270,7 @@ struct NewsCardWithImage: View {
             .cornerRadius(Theme.CornerRadius.large)
             .overlay(
                 RoundedRectangle(cornerRadius: Theme.CornerRadius.large)
-                    .stroke(isHovered ? Color.blue.opacity(0.3) : Color.clear, lineWidth: 1)
+                    .stroke(isHovered ? Color.accentColor.opacity(0.3) : Color.clear, lineWidth: 1)
             )
             .shadow(color: isHovered ? Color.black.opacity(0.1) : Color.clear, radius: 8, x: 0, y: 4)
             .scaleEffect(isHovered ? 1.01 : 1.0)
@@ -324,8 +324,8 @@ struct NewsCard: View {
                         .fontWeight(.bold)
                         .padding(.horizontal, Theme.Spacing.sm)
                         .padding(.vertical, Theme.Spacing.xs)
-                        .background(Color.blue.opacity(0.15))
-                        .foregroundColor(.blue)
+                        .background(Color.accentColor.opacity(0.15))
+                        .foregroundColor(.accentColor)
                         .cornerRadius(Theme.CornerRadius.small)
                 }
                 .frame(width: 60)
@@ -365,7 +365,7 @@ struct NewsCard: View {
             .cornerRadius(Theme.CornerRadius.large)
             .overlay(
                 RoundedRectangle(cornerRadius: Theme.CornerRadius.large)
-                    .stroke(isHovered ? Color.blue.opacity(0.3) : Color.clear, lineWidth: 1)
+                    .stroke(isHovered ? Color.accentColor.opacity(0.3) : Color.clear, lineWidth: 1)
             )
             .scaleEffect(isHovered ? 1.01 : 1.0)
             .animation(Theme.Animation.quick, value: isHovered)
@@ -434,7 +434,7 @@ struct NewsRowCompact: View {
                 Text(news.symbol)
                     .font(.caption)
                     .fontWeight(.bold)
-                    .foregroundColor(.blue)
+                    .foregroundColor(.accentColor)
                     .frame(width: 50, alignment: .leading)
 
                 VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {

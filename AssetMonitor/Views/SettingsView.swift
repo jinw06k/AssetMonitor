@@ -107,7 +107,7 @@ struct SettingsView: View {
                     if openAIKey.isEmpty {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundColor(.orange)
+                                .foregroundColor(Theme.StatusColors.warning)
                             Text("API key required for AI analysis features")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
@@ -223,7 +223,7 @@ struct SettingsView: View {
                             Circle()
                                 .fill(
                                     LinearGradient(
-                                        colors: [.blue, .blue.opacity(0.6)],
+                                        colors: [.accentColor, .accentColor.opacity(0.6)],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     )
@@ -263,17 +263,17 @@ struct SettingsView: View {
                 Section("Credits") {
                     HStack {
                         Image(systemName: "swift")
-                            .foregroundColor(.orange)
+                            .foregroundColor(.accentColor)
                         Text("Built with SwiftUI")
                     }
                     HStack {
                         Image(systemName: "chart.xyaxis.line")
-                            .foregroundColor(.purple)
+                            .foregroundColor(.accentColor)
                         Text("Stock data from Yahoo Finance")
                     }
                     HStack {
                         Image(systemName: "sparkles")
-                            .foregroundColor(.blue)
+                            .foregroundColor(.accentColor)
                         Text("AI analysis powered by OpenAI GPT-4")
                     }
                 }

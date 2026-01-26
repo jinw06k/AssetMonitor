@@ -54,21 +54,21 @@ struct PlansView: View {
                     title: "Active Plans",
                     count: databaseService.investmentPlans.filter { $0.status == .active }.count,
                     totalAmount: databaseService.investmentPlans.filter { $0.status == .active }.reduce(0) { $0 + $1.remainingAmount },
-                    color: .blue
+                    color: Theme.StatusColors.active
                 )
 
                 PlanSummaryCard(
                     title: "Overdue",
                     count: viewModel.overduePlans.count,
                     totalAmount: viewModel.overduePlans.reduce(0) { $0 + $1.amountPerPurchase },
-                    color: .orange
+                    color: Theme.StatusColors.warning
                 )
 
                 PlanSummaryCard(
                     title: "Completed",
                     count: databaseService.investmentPlans.filter { $0.status == .completed }.count,
                     totalAmount: databaseService.investmentPlans.filter { $0.status == .completed }.reduce(0) { $0 + $1.totalAmount },
-                    color: .green
+                    color: Theme.StatusColors.completed
                 )
 
                 Spacer()
@@ -113,7 +113,7 @@ struct PlanSummaryCard: View {
     let color: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             Text(title)
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -162,7 +162,7 @@ struct PlanCardView: View {
                         Text(plan.status.displayName)
                     }
                     .font(.caption)
-                    .foregroundColor(colorForStatus(plan.status))
+                    .foregroundColor(Theme.StatusColors.color(for: plan.status))
                 }
 
                 Spacer()
@@ -178,9 +178,9 @@ struct PlanCardView: View {
             }
 
             // Progress bar
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 ProgressView(value: plan.progressPercent, total: 100)
-                    .tint(plan.isOverdue ? .orange : .blue)
+                    .tint(plan.isOverdue ? Theme.StatusColors.warning : Theme.StatusColors.active)
 
                 HStack {
                     Text("\(plan.completedPurchases) of \(plan.numberOfPurchases) purchases")
@@ -199,9 +199,9 @@ struct PlanCardView: View {
                     if plan.isOverdue {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundColor(.orange)
+                                .foregroundColor(Theme.StatusColors.warning)
                             Text("Purchase overdue!")
-                                .foregroundColor(.orange)
+                                .foregroundColor(Theme.StatusColors.warning)
                         }
                     } else if let nextDate = plan.nextPurchaseDate {
                         Text("Next: \(nextDate, style: .date)")
@@ -262,11 +262,11 @@ struct PlanCardView: View {
             }
         }
         .padding()
-        .background(Color(NSColor.controlBackgroundColor))
-        .cornerRadius(12)
+        .background(Theme.Colors.cardBackground)
+        .cornerRadius(Theme.CornerRadius.large)
         .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(plan.isOverdue ? Color.orange.opacity(0.5) : Color.clear, lineWidth: 2)
+            RoundedRectangle(cornerRadius: Theme.CornerRadius.large)
+                .stroke(plan.isOverdue ? Theme.StatusColors.warning.opacity(0.5) : Color.clear, lineWidth: 2)
         )
         .sheet(isPresented: $showingRecordPurchaseSheet) {
             if let asset = asset {
@@ -277,15 +277,6 @@ struct PlanCardView: View {
             if let asset = asset {
                 EditPlanSheet(plan: plan, asset: asset)
             }
-        }
-    }
-
-    private func colorForStatus(_ status: PlanStatus) -> Color {
-        switch status {
-        case .active: return .blue
-        case .paused: return .orange
-        case .completed: return .green
-        case .cancelled: return .red
         }
     }
 }
@@ -421,15 +412,15 @@ struct RecordPurchaseSheet: View {
                         if shares > 0 && totalCost > 0 {
                             HStack {
                                 Image(systemName: "function")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(.accentColor)
                                 Text("Average Price: \(pricePerShare, format: .currency(code: "USD"))")
                                     .font(.caption)
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(.accentColor)
                                 if let price = currentPrice {
                                     let diff = ((pricePerShare - price) / price) * 100
                                     Text("(\(diff >= 0 ? "+" : "")\(diff, specifier: "%.1f")% vs market)")
                                         .font(.caption)
-                                        .foregroundColor(abs(diff) < 1 ? .green : .orange)
+                                        .foregroundColor(abs(diff) < 1 ? Theme.StatusColors.positive : Theme.StatusColors.warning)
                                 }
                             }
                         }
@@ -453,7 +444,7 @@ struct RecordPurchaseSheet: View {
                             Spacer()
                             Text("\(difference >= 0 ? "+" : "")\(difference, format: .currency(code: "USD")) (\(percentDiff, specifier: "%.1f")%)")
                                 .font(.caption)
-                                .foregroundColor(abs(percentDiff) < 5 ? .green : .orange)
+                                .foregroundColor(abs(percentDiff) < 5 ? Theme.StatusColors.positive : Theme.StatusColors.warning)
                         }
                     }
                 }
@@ -604,6 +595,7 @@ struct EditPlanSheet: View {
 
                     HStack {
                         Text("Status")
+                            .lineLimit(1)
                         Spacer()
                         HStack {
                             Image(systemName: plan.status.iconName)
@@ -629,10 +621,10 @@ struct EditPlanSheet: View {
                     if numberOfPurchases <= plan.completedPurchases {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundColor(.orange)
+                                .foregroundColor(Theme.StatusColors.warning)
                             Text("Cannot be less than completed purchases (\(plan.completedPurchases))")
                                 .font(.caption)
-                                .foregroundColor(.orange)
+                                .foregroundColor(Theme.StatusColors.warning)
                         }
                     }
 
@@ -996,7 +988,7 @@ struct PlanDetailSheet: View {
                     GroupBox("Progress") {
                         VStack(alignment: .leading, spacing: 12) {
                             ProgressView(value: plan.progressPercent, total: 100)
-                                .tint(plan.isOverdue ? .orange : .blue)
+                                .tint(plan.isOverdue ? Theme.StatusColors.warning : Theme.StatusColors.active)
 
                             DetailRow(label: "Completed", value: "\(plan.completedPurchases) of \(plan.numberOfPurchases)")
                             DetailRow(label: "Invested", value: plan.investedAmount.formatted(.currency(code: "USD")))

@@ -80,7 +80,7 @@ struct WelcomePage1: View {
                 RoundedRectangle(cornerRadius: 24)
                     .fill(
                         LinearGradient(
-                            colors: [.blue, .blue.opacity(0.7)],
+                            colors: [.accentColor, .accentColor.opacity(0.7)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )

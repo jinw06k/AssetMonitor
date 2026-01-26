@@ -16,7 +16,7 @@ struct DashboardView: View {
                         value: viewModel.totalPortfolioValue,
                         format: .currency,
                         icon: "dollarsign.circle.fill",
-                        color: .blue
+                        color: .accentColor
                     )
 
                     SummaryCard(
@@ -42,7 +42,7 @@ struct DashboardView: View {
                         value: Double(databaseService.assets.count),
                         format: .number,
                         icon: "chart.pie.fill",
-                        color: .purple
+                        color: .accentColor
                     )
                 }
                 .opacity(isLoaded ? 1 : 0)
@@ -156,7 +156,7 @@ struct OverduePlansAlert: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.md) {
             HStack {
                 Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundColor(.orange)
+                    .foregroundColor(Theme.StatusColors.warning)
                     .font(.title3)
                 Text("Overdue Investment Plans")
                     .font(.headline)
@@ -166,7 +166,7 @@ struct OverduePlansAlert: View {
                     .fontWeight(.bold)
                     .padding(.horizontal, Theme.Spacing.sm)
                     .padding(.vertical, Theme.Spacing.xs)
-                    .background(Color.orange)
+                    .background(Theme.StatusColors.warning)
                     .foregroundColor(.white)
                     .cornerRadius(Theme.CornerRadius.small)
             }
@@ -193,13 +193,13 @@ struct OverduePlansAlert: View {
                 onViewPlans()
             }
             .buttonStyle(.borderedProminent)
-            .tint(.orange)
+            .tint(Theme.StatusColors.warning)
         }
         .padding()
-        .background(Color.orange.opacity(0.1))
+        .background(Theme.StatusColors.warning.opacity(0.1))
         .overlay(
             RoundedRectangle(cornerRadius: Theme.CornerRadius.large)
-                .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+                .stroke(Theme.StatusColors.warning.opacity(0.3), lineWidth: 1)
         )
         .cornerRadius(Theme.CornerRadius.large)
     }
@@ -472,7 +472,7 @@ struct AssetTypePopover: View {
                                     } else {
                                         Text("Matured!")
                                             .font(.caption)
-                                            .foregroundColor(.orange)
+                                            .foregroundColor(Theme.StatusColors.warning)
                                     }
                                 }
                             }

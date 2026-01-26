@@ -398,7 +398,7 @@ struct AddAssetSheet: View {
 
                 if let error = errorMessage {
                     Text(error)
-                        .foregroundColor(.red)
+                        .foregroundColor(Theme.StatusColors.negative)
                         .font(.caption)
                 }
             }

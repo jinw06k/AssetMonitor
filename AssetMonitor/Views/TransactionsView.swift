@@ -79,9 +79,9 @@ struct TransactionsView: View {
                     TextField("Search by symbol...", text: $searchText)
                         .textFieldStyle(.plain)
                 }
-                .padding(8)
-                .background(Color(NSColor.controlBackgroundColor))
-                .cornerRadius(8)
+                .padding(Theme.Spacing.sm)
+                .background(Theme.Colors.cardBackground)
+                .cornerRadius(Theme.CornerRadius.medium)
                 .frame(maxWidth: 200)
 
                 // Filter by type
@@ -130,21 +130,21 @@ struct TransactionsView: View {
                     title: "Bought",
                     value: filteredTransactions.filter { $0.type == .buy }.reduce(0) { $0 + $1.totalAmount },
                     count: filteredTransactions.filter { $0.type == .buy }.count,
-                    color: .blue
+                    color: Theme.TransactionColors.buy
                 )
 
                 TransactionSummaryCard(
                     title: "Sold",
                     value: filteredTransactions.filter { $0.type == .sell }.reduce(0) { $0 + $1.totalAmount },
                     count: filteredTransactions.filter { $0.type == .sell }.count,
-                    color: .orange
+                    color: Theme.TransactionColors.sell
                 )
 
                 TransactionSummaryCard(
                     title: "Dividends",
                     value: filteredTransactions.filter { $0.type == .dividend || $0.type == .interest }.reduce(0) { $0 + $1.totalAmount },
                     count: filteredTransactions.filter { $0.type == .dividend || $0.type == .interest }.count,
-                    color: .green
+                    color: Theme.TransactionColors.dividend
                 )
 
                 Spacer()
@@ -256,10 +256,10 @@ struct TransactionRowView: View {
             // Icon
             ZStack {
                 Circle()
-                    .fill(colorForType(transaction.type).opacity(0.2))
+                    .fill(Theme.TransactionColors.color(for: transaction.type).opacity(0.2))
                     .frame(width: 36, height: 36)
                 Image(systemName: transaction.type.iconName)
-                    .foregroundColor(colorForType(transaction.type))
+                    .foregroundColor(Theme.TransactionColors.color(for: transaction.type))
                     .font(.system(size: 16))
             }
 
@@ -270,8 +270,8 @@ struct TransactionRowView: View {
                         .font(.caption)
                         .padding(.vertical, 2)
                         .frame(width: 58)
-                        .background(colorForType(transaction.type).opacity(0.2))
-                        .cornerRadius(4)
+                        .background(Theme.TransactionColors.color(for: transaction.type).opacity(0.2))
+                        .cornerRadius(Theme.CornerRadius.small)
                     Text(asset?.symbol ?? "Unknown")
                         .fontWeight(.semibold)
                 }
@@ -287,7 +287,7 @@ struct TransactionRowView: View {
                 if transaction.type == .dividend || transaction.type == .interest {
                     Text(transaction.totalAmount, format: .currency(code: "USD"))
                         .fontWeight(.medium)
-                        .foregroundColor(.green)
+                        .foregroundColor(Theme.TransactionColors.dividend)
                 } else {
                     Text("\(transaction.shares, specifier: "%.4f") @ \(transaction.pricePerShare, format: .currency(code: "USD"))")
                         .font(.subheadline)
@@ -313,15 +313,6 @@ struct TransactionRowView: View {
         }
         .padding(.vertical, 4)
     }
-
-    private func colorForType(_ type: TransactionType) -> Color {
-        switch type {
-        case .buy: return .blue
-        case .sell: return .orange
-        case .dividend, .interest, .deposit: return .green
-        case .withdrawal: return .red
-        }
-    }
 }
 
 // MARK: - Grouped Transaction Row View
@@ -339,10 +330,10 @@ struct GroupedTransactionRowView: View {
                 // Icon
                 ZStack {
                     Circle()
-                        .fill(colorForType(transaction.type).opacity(0.2))
+                        .fill(Theme.TransactionColors.color(for: transaction.type).opacity(0.2))
                         .frame(width: 36, height: 36)
                     Image(systemName: transaction.type.iconName)
-                        .foregroundColor(colorForType(transaction.type))
+                        .foregroundColor(Theme.TransactionColors.color(for: transaction.type))
                         .font(.system(size: 16))
                 }
 
@@ -353,8 +344,8 @@ struct GroupedTransactionRowView: View {
                             .font(.caption)
                             .padding(.vertical, 2)
                             .frame(width: 58)
-                            .background(colorForType(transaction.type).opacity(0.2))
-                            .cornerRadius(4)
+                            .background(Theme.TransactionColors.color(for: transaction.type).opacity(0.2))
+                            .cornerRadius(Theme.CornerRadius.small)
                         Text(asset?.symbol ?? "Unknown")
                             .fontWeight(.semibold)
                     }
@@ -386,21 +377,21 @@ struct GroupedTransactionRowView: View {
                                 .font(.caption)
                                 .padding(.horizontal, 5)
                                 .padding(.vertical, 2)
-                                .background(colorForType(linkedTx.type).opacity(0.2))
-                                .cornerRadius(4)
+                                .background(Theme.TransactionColors.color(for: linkedTx.type).opacity(0.2))
+                                .cornerRadius(Theme.CornerRadius.small)
                         }
                         Text(linkedTx.totalAmount, format: .currency(code: "USD"))
                             .font(.caption)
-                            .foregroundColor(linkedTx.type == .withdrawal ? .red : .green)
+                            .foregroundColor(linkedTx.type == .withdrawal ? Theme.StatusColors.negative : Theme.StatusColors.positive)
                     }
 
                     // Icon
                     ZStack {
                         Circle()
-                            .fill(colorForType(linkedTx.type).opacity(0.2))
+                            .fill(Theme.TransactionColors.color(for: linkedTx.type).opacity(0.2))
                             .frame(width: 36, height: 36)
                         Image(systemName: linkedTx.type.iconName)
-                            .foregroundColor(colorForType(linkedTx.type))
+                            .foregroundColor(Theme.TransactionColors.color(for: linkedTx.type))
                             .font(.system(size: 16))
                     }
                 }
@@ -429,15 +420,6 @@ struct GroupedTransactionRowView: View {
             .frame(width: 30)
         }
         .padding(.vertical, 4)
-    }
-
-    private func colorForType(_ type: TransactionType) -> Color {
-        switch type {
-        case .buy: return .blue
-        case .sell: return .orange
-        case .dividend, .interest, .deposit: return .green
-        case .withdrawal: return .red
-        }
     }
 }
 
@@ -608,7 +590,7 @@ struct AddTransactionSheet: View {
                                         let diff = ((pricePerShare - price) / price) * 100
                                         Text("(\(diff >= 0 ? "+" : "")\(diff, specifier: "%.1f")% vs market)")
                                             .font(.caption)
-                                            .foregroundColor(abs(diff) < 1 ? .green : .orange)
+                                            .foregroundColor(abs(diff) < 1 ? Theme.StatusColors.positive : Theme.StatusColors.warning)
                                     }
                                 }
                             }
@@ -618,14 +600,14 @@ struct AddTransactionSheet: View {
                         if transactionType == .buy, let cashBalance = viewModel.cashBalance as Double? {
                             HStack {
                                 Image(systemName: "banknote")
-                                    .foregroundColor(totalAmount > cashBalance ? .red : .green)
+                                    .foregroundColor(totalAmount > cashBalance ? Theme.StatusColors.negative : Theme.StatusColors.positive)
                                 Text("Cash Available: \(cashBalance, format: .currency(code: "USD"))")
                                     .font(.caption)
                                     .foregroundColor(totalAmount > cashBalance ? .red : .secondary)
                                 if totalAmount > cashBalance {
                                     Text("(Insufficient)")
                                         .font(.caption)
-                                        .foregroundColor(.red)
+                                        .foregroundColor(Theme.StatusColors.negative)
                                 }
                             }
                         }
@@ -663,7 +645,7 @@ struct AddTransactionSheet: View {
                                 Spacer()
                                 Text(totalAmount, format: .currency(code: "USD"))
                                     .fontWeight(.semibold)
-                                    .foregroundColor(transactionType == .withdrawal ? .red : .green)
+                                    .foregroundColor(transactionType == .withdrawal ? Theme.StatusColors.negative : Theme.StatusColors.positive)
                             }
                         } else {
                             HStack {
@@ -903,7 +885,7 @@ struct EditTransactionSheet: View {
                                         let diff = ((pricePerShare - price) / price) * 100
                                         Text("(\(diff >= 0 ? "+" : "")\(diff, specifier: "%.1f")% vs market)")
                                             .font(.caption)
-                                            .foregroundColor(abs(diff) < 1 ? .green : .orange)
+                                            .foregroundColor(abs(diff) < 1 ? Theme.StatusColors.positive : Theme.StatusColors.warning)
                                     }
                                 }
                             }
@@ -946,11 +928,11 @@ struct EditTransactionSheet: View {
                     Section("Linked Transaction") {
                         HStack {
                             Image(systemName: linkedTx.type.iconName)
-                                .foregroundColor(linkedTx.type == .withdrawal ? .red : .green)
+                                .foregroundColor(linkedTx.type == .withdrawal ? Theme.StatusColors.negative : Theme.StatusColors.positive)
                             Text("\(linkedAsset.symbol) \(linkedTx.type.displayName)")
                             Spacer()
                             Text(linkedTx.totalAmount, format: .currency(code: "USD"))
-                                .foregroundColor(linkedTx.type == .withdrawal ? .red : .green)
+                                .foregroundColor(linkedTx.type == .withdrawal ? Theme.StatusColors.negative : Theme.StatusColors.positive)
                         }
                         Text("This will also be updated")
                             .font(.caption)
