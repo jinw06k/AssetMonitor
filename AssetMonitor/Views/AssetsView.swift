@@ -222,7 +222,7 @@ struct AssetRowView: View {
                             Text(String(format: "%.2f%% APY", rate))
                         }
                         .font(.subheadline)
-                        .foregroundColor(.green)
+                        .foregroundColor(Theme.StatusColors.positive)
                     }
                     if let maturity = asset.cdMaturityDate {
                         let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: maturity).day ?? 0
@@ -234,7 +234,7 @@ struct AssetRowView: View {
                             Text("Matured!")
                                 .font(.caption)
                                 .fontWeight(.medium)
-                                .foregroundColor(.orange)
+                                .foregroundColor(Theme.StatusColors.warning)
                         }
                     }
                 } else if asset.type == .cash {
