@@ -1,6 +1,6 @@
 # AssetMonitor - AI Agent Guide
 
-> **Version**: 1.0.7 | **Updated**: January 25, 2026
+> **Version**: 1.0.8 | **Updated**: February 5, 2026
 
 ## Quick Reference
 
@@ -40,11 +40,13 @@ rm -rf /tmp/dmg_temp
 ### Features
 - Portfolio Tracking (Stocks, ETFs, CDs, Cash)
 - Real-time Prices (Yahoo Finance API)
+- Stock Monitor with interactive charts and watchlist
 - News Feed (Google News RSS)
 - AI Analysis (OpenAI GPT-4)
 - DCA Planning
 - Widgets & Menu Bar
 - Privacy Mode (hide dollar amounts)
+- Asset Grouping (Growth vs Fixed Income sections)
 
 ### Tech Stack
 SwiftUI (macOS 14+) | SQLite | Yahoo Finance | Google News RSS | OpenAI GPT-4 | WidgetKit
@@ -56,7 +58,7 @@ SwiftUI (macOS 14+) | SQLite | Yahoo Finance | Google News RSS | OpenAI GPT-4 | 
 ```
 AssetMonitor/
 ├── App/                    # AssetMonitorApp.swift, Theme.swift, Logger.swift
-├── Models/                 # Asset, Transaction, InvestmentPlan
+├── Models/                 # Asset, Transaction, InvestmentPlan, WatchlistItem
 ├── Views/                  # All SwiftUI views
 ├── ViewModels/             # PortfolioViewModel.swift
 ├── Services/               # DatabaseService, YahooFinance, News, OpenAI
@@ -80,6 +82,7 @@ AssetMonitor/
 -- Transactions: id, asset_id, type, date, shares, price_per_share, notes, linked_plan_id, linked_transaction_id, created_at
 -- Investment Plans: id, asset_id, total_amount, number_of_purchases, amount_per_purchase, frequency, custom_days_between, start_date, completed_purchases, status, notes, created_at
 -- Price Cache: symbol, price, previous_close, change_percent, updated_at
+-- Watchlist: id, symbol, name, added_at
 ```
 
 ---
@@ -99,6 +102,22 @@ Theme.Animation.quick/standard/smooth/spring
 
 ---
 
+## Tabs & Navigation
+
+| Tab | Shortcut | View | Description |
+|-----|----------|------|-------------|
+| Dashboard | ⌘1 | DashboardView | Portfolio overview, allocation chart |
+| Assets | ⌘2 | AssetsView | Holdings grouped by Growth / Fixed Income |
+| Transactions | ⌘3 | TransactionsView | Transaction history with linked groups |
+| Plans | ⌘4 | PlansView | DCA investment plans |
+| Monitor | ⌘5 | MonitorView | Stock charts, holdings & watchlist |
+| News | ⌘6 | NewsView | Google News RSS feed |
+| AI Analysis | ⌘7 | AIAnalysisView | OpenAI GPT-4 portfolio analysis |
+
+Sidebar sections: Overview (Dashboard, Assets) | Activity (Transactions, Plans) | Markets (Monitor) | Insights (News, AI Analysis)
+
+---
+
 ## Common Tasks
 
 ### Adding Asset Type
@@ -107,9 +126,9 @@ Theme.Animation.quick/standard/smooth/spring
 3. Update `AssetsView` add sheet
 
 ### Adding View/Tab
-1. Add case to `AppTab` in `PortfolioViewModel.swift`
+1. Add case to `AppTab` enum in `PortfolioViewModel.swift` (with icon and keyboard shortcut)
 2. Create view in `Views/`
-3. Add to `MainView.swift` switch
+3. Add to `MainView.swift` sidebar section and content switch
 
 ### Modifying Database
 1. Update `createTables()` in `DatabaseService.swift`
@@ -132,6 +151,17 @@ Theme.Animation.quick/standard/smooth/spring
 
 ---
 
+## Claude Code Skills
+
+Custom skills in `.claude/skills/`:
+
+| Skill | Command | Description |
+|-------|---------|-------------|
+| commit | `/commit` | Stage and commit with security review (blocks secrets, DB files, credentials) |
+| push | `/push` | Summarize unpushed commits, security scan diff, push to remote |
+
+---
+
 ## Debug Commands
 
 ```bash
@@ -143,6 +173,13 @@ defaults read ~/Library/Group\ Containers/group.JinWookShin.AssetMonitor/Library
 ---
 
 ## Version History
+
+### 1.0.8 (Feb 5, 2026)
+- Monitor Tab: Interactive stock charts (1D–MAX ranges) with holdings and watchlist views
+- Watchlist: New database table and model for tracking symbols outside portfolio
+- Asset Grouping: Assets view split into Growth (Stock, ETF) and Fixed Income (Treasury, CD, Cash) sections
+- Total Return Fix: Now correctly includes unrealized gains + realized gains + dividends
+- Claude Code Skills: Added `/commit` and `/push` git workflow skills
 
 ### 1.0.7 (Jan 25, 2026)
 - Theme System Compliance: Fixed all 62 hardcoded color/spacing/radius violations
