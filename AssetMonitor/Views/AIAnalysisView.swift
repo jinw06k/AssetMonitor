@@ -106,13 +106,13 @@ struct AnalysisListItem: View {
     let isCurrent: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             HStack {
                 if isCurrent {
                     Text("Latest")
                         .font(.caption)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
+                        .padding(.horizontal, Theme.Spacing.sm)
+                        .padding(.vertical, Theme.Spacing.xxs)
                         .background(Color.accentColor)
                         .foregroundColor(.white)
                         .cornerRadius(Theme.CornerRadius.small)
@@ -135,7 +135,7 @@ struct AnalysisListItem: View {
                     .foregroundColor(.secondary)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Spacing.xs)
     }
 }
 
@@ -172,12 +172,13 @@ struct AnalysisDetailView: View {
                 .padding(.bottom)
 
                 // Allocation at time of analysis
-                HStack(spacing: 16) {
+                let total = analysis.portfolioSnapshot.totalValue
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))], spacing: Theme.Spacing.md) {
                     SnapshotCard(
                         title: "Stocks",
                         value: analysis.portfolioSnapshot.stocksValue,
-                        percentage: analysis.portfolioSnapshot.totalValue > 0
-                            ? (analysis.portfolioSnapshot.stocksValue / analysis.portfolioSnapshot.totalValue) * 100
+                        percentage: total > 0
+                            ? (analysis.portfolioSnapshot.stocksValue / total) * 100
                             : 0,
                         color: Theme.AssetColors.stock
                     )
@@ -185,19 +186,37 @@ struct AnalysisDetailView: View {
                     SnapshotCard(
                         title: "ETFs",
                         value: analysis.portfolioSnapshot.etfsValue,
-                        percentage: analysis.portfolioSnapshot.totalValue > 0
-                            ? (analysis.portfolioSnapshot.etfsValue / analysis.portfolioSnapshot.totalValue) * 100
+                        percentage: total > 0
+                            ? (analysis.portfolioSnapshot.etfsValue / total) * 100
                             : 0,
                         color: Theme.AssetColors.etf
                     )
 
                     SnapshotCard(
+                        title: "Treasury",
+                        value: analysis.portfolioSnapshot.treasuryValue,
+                        percentage: total > 0
+                            ? (analysis.portfolioSnapshot.treasuryValue / total) * 100
+                            : 0,
+                        color: Theme.AssetColors.treasury
+                    )
+
+                    SnapshotCard(
                         title: "CDs",
                         value: analysis.portfolioSnapshot.cdsValue,
-                        percentage: analysis.portfolioSnapshot.totalValue > 0
-                            ? (analysis.portfolioSnapshot.cdsValue / analysis.portfolioSnapshot.totalValue) * 100
+                        percentage: total > 0
+                            ? (analysis.portfolioSnapshot.cdsValue / total) * 100
                             : 0,
                         color: Theme.AssetColors.cd
+                    )
+
+                    SnapshotCard(
+                        title: "Cash",
+                        value: analysis.portfolioSnapshot.cashValue,
+                        percentage: total > 0
+                            ? (analysis.portfolioSnapshot.cashValue / total) * 100
+                            : 0,
+                        color: Theme.AssetColors.cash
                     )
                 }
 

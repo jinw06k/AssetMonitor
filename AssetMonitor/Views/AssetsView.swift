@@ -12,39 +12,51 @@ struct AssetsView: View {
     enum SortOption: String, CaseIterable {
         case name = "Name"
         case value = "Value"
-        case gainLoss = "Gain/Loss"
+        case totalReturn = "Total Return"
         case dailyChange = "Daily Change"
     }
 
-    var filteredAssets: [Asset] {
-        var assets = databaseService.assets
+    private static let growthTypes: Set<AssetType> = [.stock, .etf]
+    private static let fixedIncomeTypes: Set<AssetType> = [.treasury, .cd, .cash]
 
-        // Filter by search
+    private func applyFiltersAndSort(_ assets: [Asset]) -> [Asset] {
+        var result = assets
+
         if !searchText.isEmpty {
-            assets = assets.filter {
+            result = result.filter {
                 $0.symbol.localizedCaseInsensitiveContains(searchText) ||
                 $0.name.localizedCaseInsensitiveContains(searchText)
             }
         }
 
-        // Filter by type
         if let type = filterType {
-            assets = assets.filter { $0.type == type }
+            result = result.filter { $0.type == type }
         }
 
-        // Sort
         switch sortOption {
         case .name:
-            assets.sort { $0.symbol < $1.symbol }
+            result.sort { $0.symbol < $1.symbol }
         case .value:
-            assets.sort { $0.totalValue > $1.totalValue }
-        case .gainLoss:
-            assets.sort { $0.gainLossPercent > $1.gainLossPercent }
+            result.sort { $0.totalValue > $1.totalValue }
+        case .totalReturn:
+            result.sort { $0.totalReturnPercent > $1.totalReturnPercent }
         case .dailyChange:
-            assets.sort { $0.dailyChangePercent > $1.dailyChangePercent }
+            result.sort { $0.dailyChangePercent > $1.dailyChangePercent }
         }
 
-        return assets
+        return result
+    }
+
+    var growthAssets: [Asset] {
+        applyFiltersAndSort(databaseService.assets.filter { Self.growthTypes.contains($0.type) })
+    }
+
+    var fixedIncomeAssets: [Asset] {
+        applyFiltersAndSort(databaseService.assets.filter { Self.fixedIncomeTypes.contains($0.type) })
+    }
+
+    var totalAssetCount: Int {
+        growthAssets.count + fixedIncomeAssets.count
     }
 
     var body: some View {
@@ -92,8 +104,8 @@ struct AssetsView: View {
                 Spacer()
 
                 // Asset count
-                if !filteredAssets.isEmpty {
-                    Text("\(filteredAssets.count) asset\(filteredAssets.count == 1 ? "" : "s")")
+                if totalAssetCount > 0 {
+                    Text("\(totalAssetCount) asset\(totalAssetCount == 1 ? "" : "s")")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.horizontal, Theme.Spacing.sm)
@@ -110,7 +122,7 @@ struct AssetsView: View {
             Divider()
 
             // Asset List
-            if filteredAssets.isEmpty {
+            if totalAssetCount == 0 {
                 EmptyStateView(
                     icon: "building.columns",
                     title: "No Assets",
@@ -120,40 +132,95 @@ struct AssetsView: View {
                 )
             } else {
                 List {
-                    ForEach(Array(filteredAssets.enumerated()), id: \.element.id) { index, asset in
-                        AssetRowView(asset: asset)
-                            .listRowInsets(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
-                            .contextMenu {
-                                Button {
-                                    viewModel.selectedAsset = asset
-                                    viewModel.selectedTab = .transactions
-                                } label: {
-                                    Label("Add Transaction", systemImage: "plus.circle")
-                                }
-                                Button {
-                                    viewModel.selectedAsset = asset
-                                    viewModel.selectedTab = .plans
-                                } label: {
-                                    Label("View Plans", systemImage: "calendar.badge.clock")
-                                }
-                                Divider()
-                                Button(role: .destructive) {
-                                    withAnimation {
-                                        viewModel.deleteAsset(asset)
-                                    }
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
+                    if !growthAssets.isEmpty {
+                        Section {
+                            ForEach(growthAssets) { asset in
+                                assetRow(asset)
                             }
+                        } header: {
+                            SectionHeaderRow(
+                                title: "Growth Assets",
+                                icon: "chart.line.uptrend.xyaxis",
+                                subtotal: growthAssets.reduce(0) { $0 + $1.totalValue }
+                            )
+                        }
+                    }
+
+                    if !fixedIncomeAssets.isEmpty {
+                        Section {
+                            ForEach(fixedIncomeAssets) { asset in
+                                assetRow(asset)
+                            }
+                        } header: {
+                            SectionHeaderRow(
+                                title: "Fixed Income & Cash",
+                                icon: "building.columns",
+                                subtotal: fixedIncomeAssets.reduce(0) { $0 + $1.totalValue }
+                            )
+                        }
                     }
                 }
                 .listStyle(.inset)
-                .animation(Theme.Animation.standard, value: filteredAssets.count)
+                .animation(Theme.Animation.standard, value: totalAssetCount)
             }
         }
         .sheet(isPresented: $showingAddSheet) {
             AddAssetSheet()
         }
+    }
+
+    @ViewBuilder
+    private func assetRow(_ asset: Asset) -> some View {
+        AssetRowView(asset: asset)
+            .listRowInsets(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
+            .contextMenu {
+                Button {
+                    viewModel.selectedAsset = asset
+                    viewModel.selectedTab = .transactions
+                } label: {
+                    Label("Add Transaction", systemImage: "plus.circle")
+                }
+                Button {
+                    viewModel.selectedAsset = asset
+                    viewModel.selectedTab = .plans
+                } label: {
+                    Label("View Plans", systemImage: "calendar.badge.clock")
+                }
+                Divider()
+                Button(role: .destructive) {
+                    withAnimation {
+                        viewModel.deleteAsset(asset)
+                    }
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            }
+    }
+}
+
+// MARK: - Section Header Row
+
+struct SectionHeaderRow: View {
+    let title: String
+    let icon: String
+    let subtotal: Double
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.sm) {
+            Image(systemName: icon)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            Text(title)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
+            Spacer()
+            Text(subtotal, format: .currency(code: "USD"))
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundColor(.secondary)
+        }
+        .padding(.vertical, Theme.Spacing.xxs)
     }
 }
 
@@ -264,10 +331,10 @@ struct AssetRowView: View {
 
                 if asset.type != .cash {
                     HStack(spacing: Theme.Spacing.xs) {
-                        ChangeIndicator(value: asset.gainLossPercent, format: .percent, showIcon: false, font: .caption)
-                        Text("(\(asset.gainLoss >= 0 ? "+" : "")\(asset.gainLoss, format: .currency(code: "USD")))")
+                        ChangeIndicator(value: asset.totalReturnPercent, format: .percent, showIcon: false, font: .caption)
+                        Text("(\(asset.totalReturn >= 0 ? "+" : "")\(asset.totalReturn, format: .currency(code: "USD")))")
                             .font(.caption)
-                            .foregroundColor(Theme.StatusColors.changeColor(for: asset.gainLoss))
+                            .foregroundColor(Theme.StatusColors.changeColor(for: asset.totalReturn))
                     }
                 }
             }

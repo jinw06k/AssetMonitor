@@ -49,7 +49,7 @@ struct PlansView: View {
             Divider()
 
             // Summary
-            HStack(spacing: 24) {
+            HStack(spacing: Theme.Spacing.xxl) {
                 PlanSummaryCard(
                     title: "Active Plans",
                     count: databaseService.investmentPlans.filter { $0.status == .active }.count,
@@ -86,7 +86,7 @@ struct PlansView: View {
                 )
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 16) {
+                    LazyVStack(spacing: Theme.Spacing.lg) {
                         ForEach(filteredPlans) { plan in
                             PlanCardView(plan: plan, onSelect: { selectedPlan = plan })
                         }
@@ -145,10 +145,10 @@ struct PlanCardView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
             // Header
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                     HStack {
                         Text(asset?.symbol ?? "Unknown")
                             .font(.headline)
@@ -167,7 +167,7 @@ struct PlanCardView: View {
 
                 Spacer()
 
-                VStack(alignment: .trailing, spacing: 4) {
+                VStack(alignment: .trailing, spacing: Theme.Spacing.xs) {
                     Text(plan.remainingAmount, format: .currency(code: "USD"))
                         .font(.title3)
                         .fontWeight(.semibold)
@@ -358,9 +358,9 @@ struct RecordPurchaseSheet: View {
                 Section("Transaction Details") {
                     DatePicker("Date", selection: $date, displayedComponents: .date)
 
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                         HStack {
-                            VStack(alignment: .leading, spacing: 4) {
+                            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                                 Text("Shares")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
@@ -382,7 +382,7 @@ struct RecordPurchaseSheet: View {
                         }
 
                         HStack {
-                            VStack(alignment: .leading, spacing: 4) {
+                            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                                 Text("Total Cost")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
@@ -650,7 +650,7 @@ struct EditPlanSheet: View {
                 // Preview
                 if isValid {
                     Section("Plan Preview") {
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                             HStack {
                                 Text("Amount per purchase:")
                                 Spacer()
@@ -830,7 +830,7 @@ struct AddPlanSheet: View {
                 // Preview
                 if isValid {
                     Section("Plan Preview") {
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                             HStack {
                                 Text("Amount per purchase:")
                                 Spacer()
@@ -973,10 +973,10 @@ struct PlanDetailSheet: View {
             Divider()
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
                     // Overview
                     GroupBox("Overview") {
-                        VStack(spacing: 12) {
+                        VStack(spacing: Theme.Spacing.md) {
                             DetailRow(label: "Total Investment", value: plan.totalAmount.formatted(.currency(code: "USD")))
                             DetailRow(label: "Per Purchase", value: plan.amountPerPurchase.formatted(.currency(code: "USD")))
                             DetailRow(label: "Frequency", value: plan.frequency.displayName)
@@ -986,7 +986,7 @@ struct PlanDetailSheet: View {
 
                     // Progress
                     GroupBox("Progress") {
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
                             ProgressView(value: plan.progressPercent, total: 100)
                                 .tint(plan.isOverdue ? Theme.StatusColors.warning : Theme.StatusColors.active)
 
@@ -998,7 +998,7 @@ struct PlanDetailSheet: View {
 
                     // Schedule
                     GroupBox("Purchase Schedule") {
-                        VStack(spacing: 8) {
+                        VStack(spacing: Theme.Spacing.sm) {
                             ForEach(plan.schedule) { item in
                                 HStack {
                                     Text("#\(item.purchaseNumber)")

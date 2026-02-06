@@ -59,7 +59,7 @@ struct SettingsView: View {
                     VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                         ShortcutRow(keys: "⌘R", description: "Refresh prices")
                         ShortcutRow(keys: "⌘N", description: "Add new asset")
-                        ShortcutRow(keys: "⌘1-6", description: "Switch between tabs")
+                        ShortcutRow(keys: "⌘1-7", description: "Switch between tabs")
                     }
                 }
 
@@ -255,6 +255,7 @@ struct SettingsView: View {
 
                 Section("Features") {
                     FeatureRow(icon: "chart.pie.fill", title: "Portfolio Tracking", description: "Monitor stocks, ETFs, CDs, and cash")
+                    FeatureRow(icon: "chart.xyaxis.line", title: "Stock Charts", description: "Interactive charts with watchlist")
                     FeatureRow(icon: "calendar.badge.clock", title: "DCA Planning", description: "Smart dollar-cost averaging")
                     FeatureRow(icon: "brain", title: "AI Analysis", description: "GPT-4 powered insights")
                     FeatureRow(icon: "square.grid.2x2", title: "Widgets", description: "Desktop widgets for quick access")

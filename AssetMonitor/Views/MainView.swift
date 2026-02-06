@@ -21,6 +21,8 @@ struct MainView: View {
                     TransactionsView()
                 case .plans:
                     PlansView()
+                case .monitor:
+                    MonitorView()
                 case .news:
                     NewsView()
                 case .analysis:
@@ -97,6 +99,9 @@ struct MainView: View {
                 Button("") { viewModel.selectedTab = .plans }
                     .keyboardShortcut(.plans)
                     .hidden()
+                Button("") { viewModel.selectedTab = .monitor }
+                    .keyboardShortcut(.monitor)
+                    .hidden()
                 Button("") { viewModel.selectedTab = .news }
                     .keyboardShortcut(.news)
                     .hidden()
@@ -170,10 +175,15 @@ struct SidebarView: View {
                 }
             }
 
+            Section("Markets") {
+                SidebarTabItem(tab: .monitor, shortcut: "⌘5")
+                    .tag(AppTab.monitor)
+            }
+
             Section("Insights") {
-                SidebarTabItem(tab: .news, shortcut: "⌘5")
+                SidebarTabItem(tab: .news, shortcut: "⌘6")
                     .tag(AppTab.news)
-                SidebarTabItem(tab: .analysis, shortcut: "⌘6")
+                SidebarTabItem(tab: .analysis, shortcut: "⌘7")
                     .tag(AppTab.analysis)
             }
 
@@ -228,9 +238,9 @@ struct QuickStatsView: View {
 
             QuickStatRow(
                 label: "Total Return",
-                value: viewModel.totalGainLoss.formatted(.currency(code: "USD")),
-                change: viewModel.totalGainLossPercent,
-                color: Theme.StatusColors.changeColor(for: viewModel.totalGainLoss)
+                value: viewModel.totalReturn.formatted(.currency(code: "USD")),
+                change: viewModel.totalReturnPercent,
+                color: Theme.StatusColors.changeColor(for: viewModel.totalReturn)
             )
 
             // Overdue plans indicator

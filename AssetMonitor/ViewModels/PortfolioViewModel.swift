@@ -52,6 +52,23 @@ class PortfolioViewModel: ObservableObject {
         return (totalGainLoss / totalCost) * 100
     }
 
+    var totalDividends: Double {
+        DatabaseService.shared.assets.reduce(0) { $0 + $1.totalDividends }
+    }
+
+    var totalRealizedGains: Double {
+        DatabaseService.shared.assets.reduce(0) { $0 + $1.realizedGains }
+    }
+
+    var totalReturn: Double {
+        totalGainLoss + totalRealizedGains + totalDividends
+    }
+
+    var totalReturnPercent: Double {
+        guard totalCost > 0 else { return 0 }
+        return (totalReturn / totalCost) * 100
+    }
+
     var dailyChange: Double {
         DatabaseService.shared.assets.reduce(0) { total, asset in
             let shares = asset.totalShares
@@ -495,6 +512,31 @@ class PortfolioViewModel: ObservableObject {
         DatabaseService.shared.deleteInvestmentPlan(plan)
         syncAllWidgetData()
     }
+
+    // MARK: - Watchlist Management
+
+    func addToWatchlist(symbol: String, name: String) {
+        let item = WatchlistItem(symbol: symbol, name: name)
+        DatabaseService.shared.addWatchlistItem(item)
+    }
+
+    func removeFromWatchlist(_ item: WatchlistItem) {
+        DatabaseService.shared.deleteWatchlistItem(item)
+    }
+
+    func refreshWatchlistPrices() async {
+        let symbols = DatabaseService.shared.watchlistItems.map { $0.symbol }
+        guard !symbols.isEmpty else { return }
+
+        let quotes = await YahooFinanceService.shared.fetchQuotes(symbols: symbols)
+
+        for (symbol, quote) in quotes {
+            if let index = DatabaseService.shared.watchlistItems.firstIndex(where: { $0.symbol == symbol }) {
+                DatabaseService.shared.watchlistItems[index].currentPrice = quote.price
+                DatabaseService.shared.watchlistItems[index].previousClose = quote.previousClose
+            }
+        }
+    }
 }
 
 // MARK: - Supporting Types
@@ -504,6 +546,7 @@ enum AppTab: String, CaseIterable {
     case assets = "Assets"
     case transactions = "Transactions"
     case plans = "Plans"
+    case monitor = "Monitor"
     case news = "News"
     case analysis = "AI Analysis"
 
@@ -513,6 +556,7 @@ enum AppTab: String, CaseIterable {
         case .assets: return "building.columns.fill"
         case .transactions: return "arrow.left.arrow.right"
         case .plans: return "calendar.badge.clock"
+        case .monitor: return "chart.xyaxis.line"
         case .news: return "newspaper.fill"
         case .analysis: return "brain"
         }

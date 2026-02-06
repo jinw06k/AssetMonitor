@@ -115,6 +115,55 @@ class YahooFinanceService {
         )
     }
 
+    // MARK: - Chart Data with Configurable Ranges
+
+    enum ChartRange: String, CaseIterable {
+        case oneDay = "1D"
+        case fiveDays = "5D"
+        case oneMonth = "1M"
+        case threeMonths = "3M"
+        case oneYear = "1Y"
+
+        var rangeParam: String {
+            switch self {
+            case .oneDay: return "1d"
+            case .fiveDays: return "5d"
+            case .oneMonth: return "1mo"
+            case .threeMonths: return "3mo"
+            case .oneYear: return "1y"
+            }
+        }
+
+        var intervalParam: String {
+            switch self {
+            case .oneDay: return "5m"
+            case .fiveDays: return "15m"
+            case .oneMonth: return "1d"
+            case .threeMonths: return "1d"
+            case .oneYear: return "1d"
+            }
+        }
+    }
+
+    func fetchChartData(symbol: String, chartRange: ChartRange) async throws -> [HistoricalDataPoint] {
+        let urlString = "\(baseURL)\(symbol)?interval=\(chartRange.intervalParam)&range=\(chartRange.rangeParam)"
+        guard let url = URL(string: urlString) else {
+            throw YahooFinanceError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.setValue("Mozilla/5.0", forHTTPHeaderField: "User-Agent")
+
+        let (data, response) = try await session.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw YahooFinanceError.requestFailed
+        }
+
+        return try parseHistoricalData(data: data)
+    }
+
     // MARK: - Historical Data
 
     func fetchHistoricalData(symbol: String, range: String = "1y") async throws -> [HistoricalDataPoint] {

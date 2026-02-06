@@ -240,12 +240,16 @@ class OpenAIService {
         let stocks = assets.filter { $0.type == .stock }
         let etfs = assets.filter { $0.type == .etf }
         let cds = assets.filter { $0.type == .cd }
+        let treasuries = assets.filter { $0.type == .treasury }
+        let cash = assets.filter { $0.type == .cash }
 
         return PortfolioSnapshot(
             totalValue: assets.reduce(0) { $0 + $1.totalValue },
             stocksValue: stocks.reduce(0) { $0 + $1.totalValue },
             etfsValue: etfs.reduce(0) { $0 + $1.totalValue },
             cdsValue: cds.reduce(0) { $0 + $1.totalValue },
+            treasuryValue: treasuries.reduce(0) { $0 + $1.totalValue },
+            cashValue: cash.reduce(0) { $0 + $1.totalValue },
             numberOfHoldings: assets.count
         )
     }
@@ -300,6 +304,8 @@ struct PortfolioSnapshot: Hashable, Equatable {
     let stocksValue: Double
     let etfsValue: Double
     let cdsValue: Double
+    let treasuryValue: Double
+    let cashValue: Double
     let numberOfHoldings: Int
 }
 

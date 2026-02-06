@@ -417,8 +417,10 @@ extension KeyboardShortcut {
     static let transactions = KeyboardShortcut("3", modifiers: .command)
     /// Plans: Cmd + 4
     static let plans = KeyboardShortcut("4", modifiers: .command)
-    /// News: Cmd + 5
-    static let news = KeyboardShortcut("5", modifiers: .command)
-    /// AI Analysis: Cmd + 6
-    static let aiAnalysis = KeyboardShortcut("6", modifiers: .command)
+    /// Monitor: Cmd + 5
+    static let monitor = KeyboardShortcut("5", modifiers: .command)
+    /// News: Cmd + 6
+    static let news = KeyboardShortcut("6", modifiers: .command)
+    /// AI Analysis: Cmd + 7
+    static let aiAnalysis = KeyboardShortcut("7", modifiers: .command)
 }

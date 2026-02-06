@@ -30,11 +30,11 @@ struct DashboardView: View {
 
                     SummaryCard(
                         title: "Total Return",
-                        value: viewModel.totalGainLoss,
+                        value: viewModel.totalReturn,
                         format: .currency,
-                        change: viewModel.totalGainLossPercent,
+                        change: viewModel.totalReturnPercent,
                         icon: "arrow.up.right",
-                        color: Theme.StatusColors.changeColor(for: viewModel.totalGainLoss)
+                        color: Theme.StatusColors.changeColor(for: viewModel.totalReturn)
                     )
 
                     SummaryCard(
@@ -125,6 +125,16 @@ struct DashboardView: View {
                 }
                 .opacity(isLoaded ? 1 : 0)
                 .offset(y: isLoaded ? 0 : 18)
+
+                // Latest News
+                if !viewModel.stockNews.isEmpty {
+                    NewsSummaryCard(
+                        news: viewModel.stockNews,
+                        onViewAll: { viewModel.selectedTab = .news }
+                    )
+                    .opacity(isLoaded ? 1 : 0)
+                    .offset(y: isLoaded ? 0 : 22)
+                }
 
                 // Active Plans Alert
                 if !viewModel.overduePlans.isEmpty {
@@ -224,14 +234,19 @@ struct SummaryCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundColor(color)
-                    .font(.system(size: Theme.IconSize.medium))
+            HStack(spacing: Theme.Spacing.sm) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: Theme.CornerRadius.medium)
+                        .fill(color.opacity(0.12))
+                        .frame(width: 28, height: 28)
+                    Image(systemName: icon)
+                        .foregroundColor(color)
+                        .font(.system(size: 13, weight: .semibold))
+                }
                 Text(title)
+                    .font(.caption)
                     .foregroundColor(.secondary)
             }
-            .font(.caption)
 
             switch format {
             case .currency:
@@ -254,7 +269,6 @@ struct SummaryCard: View {
                 .font(.caption)
                 .foregroundColor(Theme.StatusColors.changeColor(for: change))
             } else {
-                // Placeholder to maintain consistent height
                 Text(" ")
                     .font(.caption)
             }
@@ -265,88 +279,12 @@ struct SummaryCard: View {
         .cornerRadius(Theme.CornerRadius.large)
         .overlay(
             RoundedRectangle(cornerRadius: Theme.CornerRadius.large)
-                .stroke(isHovered ? color.opacity(0.3) : Color.clear, lineWidth: 2)
+                .stroke(isHovered ? color.opacity(0.3) : Color.clear, lineWidth: 1.5)
         )
         .scaleEffect(isHovered ? 1.02 : 1.0)
         .animation(Theme.Animation.quick, value: isHovered)
         .onHover { hovering in
             isHovered = hovering
-        }
-    }
-}
-
-// MARK: - Holding Row
-
-struct HoldingRow: View {
-    let asset: Asset
-    let totalValue: Double
-    @State private var isHovered = false
-
-    var allocation: Double {
-        guard totalValue > 0 else { return 0 }
-        return (asset.totalValue / totalValue) * 100
-    }
-
-    var body: some View {
-        HStack {
-            // Asset type indicator
-            Circle()
-                .fill(Theme.AssetColors.color(for: asset.type))
-                .frame(width: 8, height: 8)
-
-            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                HStack(spacing: Theme.Spacing.xs) {
-                    Text(asset.symbol)
-                        .fontWeight(.semibold)
-                    Image(systemName: asset.type.iconName)
-                        .font(.caption)
-                        .foregroundColor(Theme.AssetColors.color(for: asset.type))
-                }
-                Text(asset.name)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-            }
-
-            Spacer()
-
-            VStack(alignment: .trailing, spacing: Theme.Spacing.xxs) {
-                if let price = asset.currentPrice {
-                    Text(price, format: .currency(code: "USD"))
-                        .fontWeight(.medium)
-                        .contentTransition(.numericText())
-                }
-                HStack(spacing: Theme.Spacing.xxs) {
-                    Image(systemName: asset.dailyChangePercent >= 0 ? "arrow.up" : "arrow.down")
-                        .font(.caption2)
-                    Text(String(format: "%@%.2f%%", asset.dailyChangePercent >= 0 ? "+" : "", asset.dailyChangePercent))
-                }
-                .font(.caption)
-                .foregroundColor(Theme.StatusColors.changeColor(for: asset.dailyChangePercent))
-            }
-
-            Divider()
-                .frame(height: 30)
-                .padding(.horizontal, Theme.Spacing.md)
-
-            VStack(alignment: .trailing, spacing: Theme.Spacing.xxs) {
-                Text(asset.totalValue, format: .currency(code: "USD"))
-                    .fontWeight(.medium)
-                    .contentTransition(.numericText())
-                Text(String(format: "%.1f%%", allocation))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            .frame(width: 100, alignment: .trailing)
-        }
-        .padding(.vertical, Theme.Spacing.sm)
-        .padding(.horizontal, Theme.Spacing.sm)
-        .background(isHovered ? Theme.Colors.overlay(opacity: 0.05) : Color.clear)
-        .cornerRadius(Theme.CornerRadius.medium)
-        .onHover { hovering in
-            withAnimation(Theme.Animation.quick) {
-                isHovered = hovering
-            }
         }
     }
 }
@@ -433,7 +371,7 @@ struct AssetTypePopover: View {
     let totalTypeValue: Double
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
             Text("\(type.displayName) Breakdown")
                 .font(.headline)
 
@@ -446,7 +384,7 @@ struct AssetTypePopover: View {
                         .foregroundColor(.secondary)
                 } else {
                     ForEach(assets.sorted { ($0.cdMaturityDate ?? Date.distantFuture) < ($1.cdMaturityDate ?? Date.distantFuture) }) { cd in
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                             HStack {
                                 Text(cd.name)
                                     .fontWeight(.medium)
@@ -484,7 +422,7 @@ struct AssetTypePopover: View {
                                     .foregroundColor(.secondary)
                             }
                         }
-                        .padding(.vertical, 4)
+                        .padding(.vertical, Theme.Spacing.xs)
 
                         if cd.id != assets.last?.id {
                             Divider()
@@ -535,7 +473,7 @@ struct AssetTypePopover: View {
                                 }
                             }
                         }
-                        .padding(.vertical, 2)
+                        .padding(.vertical, Theme.Spacing.xxs)
                     }
                 }
             }
@@ -715,241 +653,6 @@ struct InteractivePieChart: View {
     }
 }
 
-// MARK: - Pie Slice Shape (kept for potential future use)
-
-struct PieSliceShape: Shape {
-    let startAngle: Angle
-    let endAngle: Angle
-
-    func path(in rect: CGRect) -> Path {
-        let center = CGPoint(x: rect.midX, y: rect.midY)
-        let radius = min(rect.width, rect.height) / 2
-
-        var path = Path()
-        path.move(to: center)
-        path.addArc(center: center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: false)
-        path.closeSubpath()
-        return path
-    }
-}
-
-// MARK: - Portfolio Growth Chart
-
-struct PortfolioGrowthChart: View {
-    @EnvironmentObject var viewModel: PortfolioViewModel
-    @EnvironmentObject var databaseService: DatabaseService
-
-    @State private var selectedRange: TimeRange = .month
-    @State private var hoveredPoint: PortfolioDataPoint?
-
-    enum TimeRange: String, CaseIterable {
-        case week = "1W"
-        case month = "1M"
-        case threeMonths = "3M"
-        case year = "1Y"
-        case all = "All"
-
-        var days: Int {
-            switch self {
-            case .week: return 7
-            case .month: return 30
-            case .threeMonths: return 90
-            case .year: return 365
-            case .all: return 3650
-            }
-        }
-    }
-
-    var portfolioData: [PortfolioDataPoint] {
-        generatePortfolioHistory()
-    }
-
-    var filteredData: [PortfolioDataPoint] {
-        let cutoffDate = Calendar.current.date(byAdding: .day, value: -selectedRange.days, to: Date()) ?? Date()
-        return portfolioData.filter { $0.date >= cutoffDate }
-    }
-
-    var growthPercent: Double {
-        guard let first = filteredData.first, let last = filteredData.last, first.value > 0 else { return 0 }
-        return ((last.value - first.value) / first.value) * 100
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
-            HStack {
-                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                    Text("Portfolio Growth")
-                        .font(.headline)
-                    if let hovered = hoveredPoint {
-                        HStack(spacing: Theme.Spacing.sm) {
-                            Text(hovered.value, format: .currency(code: "USD"))
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                            Text(hovered.date, style: .date)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    } else {
-                        HStack(spacing: Theme.Spacing.sm) {
-                            Text(viewModel.totalPortfolioValue, format: .currency(code: "USD"))
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                            ChangeIndicator(value: growthPercent, format: .percent, font: .subheadline)
-                        }
-                    }
-                }
-
-                Spacer()
-
-                // Time range picker
-                HStack(spacing: Theme.Spacing.xs) {
-                    ForEach(TimeRange.allCases, id: \.self) { range in
-                        Button(range.rawValue) {
-                            withAnimation(Theme.Animation.quick) {
-                                selectedRange = range
-                            }
-                        }
-                        .buttonStyle(.plain)
-                        .font(.caption)
-                        .fontWeight(selectedRange == range ? .semibold : .regular)
-                        .foregroundColor(selectedRange == range ? .primary : .secondary)
-                        .padding(.horizontal, Theme.Spacing.sm)
-                        .padding(.vertical, Theme.Spacing.xs)
-                        .background(selectedRange == range ? Theme.Colors.overlay(opacity: 0.1) : Color.clear)
-                        .cornerRadius(Theme.CornerRadius.small)
-                    }
-                }
-            }
-
-            if filteredData.isEmpty {
-                ContentUnavailableView(
-                    "No Data",
-                    systemImage: "chart.xyaxis.line",
-                    description: Text("Add transactions to see growth")
-                )
-                .frame(height: 200)
-            } else {
-                Chart(filteredData) { point in
-                    AreaMark(
-                        x: .value("Date", point.date),
-                        y: .value("Value", point.value)
-                    )
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [
-                                Theme.StatusColors.changeColor(for: growthPercent).opacity(0.3),
-                                Theme.StatusColors.changeColor(for: growthPercent).opacity(0.05)
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-
-                    LineMark(
-                        x: .value("Date", point.date),
-                        y: .value("Value", point.value)
-                    )
-                    .foregroundStyle(Theme.StatusColors.changeColor(for: growthPercent))
-                    .lineStyle(StrokeStyle(lineWidth: 2))
-                }
-                .chartXAxis {
-                    AxisMarks(values: .automatic(desiredCount: 5)) { value in
-                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                    }
-                }
-                .chartYAxis {
-                    AxisMarks(position: .leading, values: .automatic(desiredCount: 4)) { value in
-                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4, 4]))
-                        AxisValueLabel {
-                            if let doubleValue = value.as(Double.self) {
-                                Text(doubleValue.formatted(.currency(code: "USD").notation(.compactName)))
-                            }
-                        }
-                    }
-                }
-                .chartOverlay { proxy in
-                    GeometryReader { geometry in
-                        Rectangle()
-                            .fill(Color.clear)
-                            .contentShape(Rectangle())
-                            .gesture(
-                                DragGesture(minimumDistance: 0)
-                                    .onChanged { value in
-                                        let x = value.location.x
-                                        if let date: Date = proxy.value(atX: x) {
-                                            hoveredPoint = filteredData.min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) })
-                                        }
-                                    }
-                                    .onEnded { _ in
-                                        hoveredPoint = nil
-                                    }
-                            )
-                            .onHover { hovering in
-                                if !hovering {
-                                    hoveredPoint = nil
-                                }
-                            }
-                    }
-                }
-                .frame(height: 200)
-            }
-        }
-    }
-
-    private func generatePortfolioHistory() -> [PortfolioDataPoint] {
-        // Generate simulated historical data based on transactions
-        let transactions = databaseService.transactions.sorted { $0.date < $1.date }
-        guard !transactions.isEmpty else {
-            // If no transactions, return current value as single point
-            if viewModel.totalPortfolioValue > 0 {
-                return [PortfolioDataPoint(date: Date(), value: viewModel.totalPortfolioValue)]
-            }
-            return []
-        }
-
-        var dataPoints: [PortfolioDataPoint] = []
-        let startDate = transactions.first?.date ?? Date()
-        let calendar = Calendar.current
-
-        // Calculate cumulative value at each transaction date
-        var cumulativeValue: Double = 0
-        var transactionIndex = 0
-
-        // Generate daily points
-        var currentDate = startDate
-        while currentDate <= Date() {
-            // Add any transactions on or before this date
-            while transactionIndex < transactions.count &&
-                  transactions[transactionIndex].date <= currentDate {
-                let tx = transactions[transactionIndex]
-                switch tx.type {
-                case .buy, .deposit:
-                    cumulativeValue += tx.totalAmount
-                case .sell, .withdrawal:
-                    cumulativeValue -= tx.totalAmount
-                case .dividend, .interest:
-                    cumulativeValue += tx.totalAmount
-                }
-                transactionIndex += 1
-            }
-
-            // Add some market variation for realistic look (simplified simulation)
-            let variation = 1.0 + (Double.random(in: -0.02...0.02))
-            let adjustedValue = max(0, cumulativeValue * variation)
-
-            dataPoints.append(PortfolioDataPoint(date: currentDate, value: adjustedValue))
-            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate.addingTimeInterval(86400)
-        }
-
-        // Ensure last point is current actual value
-        if let last = dataPoints.last {
-            dataPoints[dataPoints.count - 1] = PortfolioDataPoint(date: last.date, value: viewModel.totalPortfolioValue)
-        }
-
-        return dataPoints
-    }
-}
-
 // MARK: - Portfolio Data Point
 
 struct PortfolioDataPoint: Identifiable {
@@ -1103,15 +806,12 @@ struct PortfolioGrowthChartCompact: View {
                 transactionIndex += 1
             }
 
-            let variation = 1.0 + (Double.random(in: -0.02...0.02))
-            let adjustedValue = max(0, cumulativeValue * variation)
-
-            dataPoints.append(PortfolioDataPoint(date: currentDate, value: adjustedValue))
+            dataPoints.append(PortfolioDataPoint(date: currentDate, value: max(0, cumulativeValue)))
             currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate.addingTimeInterval(86400)
         }
 
-        if let last = dataPoints.last {
-            dataPoints[dataPoints.count - 1] = PortfolioDataPoint(date: last.date, value: viewModel.totalPortfolioValue)
+        if !dataPoints.isEmpty {
+            dataPoints[dataPoints.count - 1] = PortfolioDataPoint(date: dataPoints.last!.date, value: viewModel.totalPortfolioValue)
         }
 
         return dataPoints
@@ -1124,6 +824,11 @@ struct CompactHoldingRow: View {
     let asset: Asset
     let totalValue: Double
     @State private var isHovered = false
+    @State private var animatedAllocation: CGFloat = 0
+
+    private var assetColor: Color {
+        Theme.AssetColors.color(for: asset.type)
+    }
 
     var allocation: Double {
         guard totalValue > 0 else { return 0 }
@@ -1133,7 +838,7 @@ struct CompactHoldingRow: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.sm) {
             Circle()
-                .fill(Theme.AssetColors.color(for: asset.type))
+                .fill(assetColor)
                 .frame(width: 6, height: 6)
 
             Text(asset.symbol)
@@ -1141,13 +846,34 @@ struct CompactHoldingRow: View {
                 .fontWeight(.semibold)
                 .frame(width: 50, alignment: .leading)
 
-            Spacer()
+            // Allocation bar
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: Theme.Spacing.xxs)
+                        .fill(Color.gray.opacity(0.1))
+
+                    RoundedRectangle(cornerRadius: Theme.Spacing.xxs)
+                        .fill(assetColor.opacity(0.5))
+                        .frame(width: max(animatedAllocation, 2))
+                }
+                .onAppear {
+                    withAnimation(Theme.Animation.smooth.delay(0.05)) {
+                        animatedAllocation = geometry.size.width * CGFloat(min(allocation, 100) / 100)
+                    }
+                }
+            }
+            .frame(height: 4)
+
+            Text(String(format: "%.0f%%", allocation))
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .frame(width: 28, alignment: .trailing)
 
             VStack(alignment: .trailing, spacing: 0) {
                 Text(asset.totalValue, format: .currency(code: "USD"))
                     .font(.caption)
                     .fontWeight(.medium)
-                HStack(spacing: 2) {
+                HStack(spacing: Theme.Spacing.xxs) {
                     Image(systemName: asset.dailyChangePercent >= 0 ? "arrow.up" : "arrow.down")
                         .font(.system(size: 8))
                     Text(String(format: "%.1f%%", abs(asset.dailyChangePercent)))

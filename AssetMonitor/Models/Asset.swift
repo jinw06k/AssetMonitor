@@ -45,6 +45,8 @@ struct Asset: Identifiable, Codable, Hashable {
     // Computed from transactions (not stored)
     var totalShares: Double = 0
     var averageCost: Double = 0
+    var totalDividends: Double = 0
+    var realizedGains: Double = 0
     var currentPrice: Double?
     var previousClose: Double?
 
@@ -68,6 +70,15 @@ struct Asset: Identifiable, Codable, Hashable {
     var gainLossPercent: Double {
         guard totalCost > 0 else { return 0 }
         return (gainLoss / totalCost) * 100
+    }
+
+    var totalReturn: Double {
+        return gainLoss + realizedGains + totalDividends
+    }
+
+    var totalReturnPercent: Double {
+        guard totalCost > 0 else { return 0 }
+        return (totalReturn / totalCost) * 100
     }
 
     var dailyChange: Double {

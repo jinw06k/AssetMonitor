@@ -185,8 +185,16 @@ struct SymbolFilterButton: View {
 
 struct NewsCardWithImage: View {
     let news: StockNews
+    @EnvironmentObject var databaseService: DatabaseService
     @State private var isHovered = false
     @State private var thumbnailImage: NSImage?
+
+    private var symbolColor: Color {
+        if let asset = databaseService.assets.first(where: { $0.symbol == news.symbol }) {
+            return Theme.AssetColors.color(for: asset.type)
+        }
+        return .accentColor
+    }
 
     var body: some View {
         Button(action: openLink) {
@@ -230,8 +238,8 @@ struct NewsCardWithImage: View {
                         .fontWeight(.bold)
                         .padding(.horizontal, Theme.Spacing.sm)
                         .padding(.vertical, Theme.Spacing.xxs)
-                        .background(Color.accentColor.opacity(0.15))
-                        .foregroundColor(.accentColor)
+                        .background(symbolColor.opacity(0.15))
+                        .foregroundColor(symbolColor)
                         .cornerRadius(Theme.CornerRadius.small)
 
                     Text(news.title)
@@ -304,81 +312,6 @@ struct NewsCardWithImage: View {
             }
         } catch {
             // Silently fail - just show placeholder
-        }
-    }
-}
-
-// MARK: - News Card (Legacy - kept for compatibility)
-
-struct NewsCard: View {
-    let news: StockNews
-    @State private var isHovered = false
-
-    var body: some View {
-        Button(action: openLink) {
-            HStack(alignment: .top, spacing: Theme.Spacing.lg) {
-                // Symbol badge
-                VStack {
-                    Text(news.symbol)
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .padding(.horizontal, Theme.Spacing.sm)
-                        .padding(.vertical, Theme.Spacing.xs)
-                        .background(Color.accentColor.opacity(0.15))
-                        .foregroundColor(.accentColor)
-                        .cornerRadius(Theme.CornerRadius.small)
-                }
-                .frame(width: 60)
-
-                // Content
-                VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                    Text(news.title)
-                        .font(.headline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.primary)
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
-
-                    HStack {
-                        Text(news.publisher)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-
-                        Text("•")
-                            .foregroundColor(.secondary)
-
-                        Text(news.timeAgo)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-
-                        Spacer()
-
-                        Image(systemName: "arrow.up.right")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .opacity(isHovered ? 1 : 0.5)
-                    }
-                }
-            }
-            .padding()
-            .background(Theme.Colors.cardBackground)
-            .cornerRadius(Theme.CornerRadius.large)
-            .overlay(
-                RoundedRectangle(cornerRadius: Theme.CornerRadius.large)
-                    .stroke(isHovered ? Color.accentColor.opacity(0.3) : Color.clear, lineWidth: 1)
-            )
-            .scaleEffect(isHovered ? 1.01 : 1.0)
-            .animation(Theme.Animation.quick, value: isHovered)
-        }
-        .buttonStyle(.plain)
-        .onHover { hovering in
-            isHovered = hovering
-        }
-    }
-
-    private func openLink() {
-        if let url = URL(string: news.link) {
-            NSWorkspace.shared.open(url)
         }
     }
 }

@@ -18,6 +18,7 @@ class DatabaseService: ObservableObject {
     @Published var assets: [Asset] = []
     @Published var transactions: [Transaction] = []
     @Published var investmentPlans: [InvestmentPlan] = []
+    @Published var watchlistItems: [WatchlistItem] = []
 
     init() {
         // Set up database path
@@ -103,10 +104,20 @@ class DatabaseService: ObservableObject {
             );
         """
 
+        let createWatchlistTable = """
+            CREATE TABLE IF NOT EXISTS watchlist (
+                id TEXT PRIMARY KEY,
+                symbol TEXT NOT NULL,
+                name TEXT NOT NULL,
+                added_at TEXT NOT NULL
+            );
+        """
+
         executeSQL(createAssetsTable)
         executeSQL(createTransactionsTable)
         executeSQL(createPlansTable)
         executeSQL(createPriceCacheTable)
+        executeSQL(createWatchlistTable)
 
         // Run migrations
         migrateDatabase()
@@ -194,6 +205,7 @@ class DatabaseService: ObservableObject {
         loadInvestmentPlans()
         calculateAssetMetrics()
         migrateExistingTransactionLinks()
+        loadWatchlist()
     }
 
     /// Removes invalid assets (blank symbols, "X", test entries)
@@ -325,6 +337,8 @@ class DatabaseService: ObservableObject {
             let summary = TransactionSummary.calculate(from: assetTransactions, isCash: isCash)
             assets[i].totalShares = summary.totalShares
             assets[i].averageCost = summary.averageCost
+            assets[i].totalDividends = summary.totalDividends
+            assets[i].realizedGains = summary.realizedGains
 
             // Load cached price (not for cash)
             if assets[i].type != .cash {
@@ -708,6 +722,72 @@ class DatabaseService: ObservableObject {
         }
         sqlite3_finalize(stmt)
         return nil
+    }
+
+    // MARK: - Watchlist CRUD
+
+    private func loadWatchlist() {
+        watchlistItems.removeAll()
+        let query = "SELECT * FROM watchlist ORDER BY added_at DESC"
+
+        var stmt: OpaquePointer?
+        if sqlite3_prepare_v2(db, query, -1, &stmt, nil) == SQLITE_OK {
+            while sqlite3_step(stmt) == SQLITE_ROW {
+                let item = watchlistItemFromStatement(stmt)
+                watchlistItems.append(item)
+            }
+        }
+        sqlite3_finalize(stmt)
+    }
+
+    func addWatchlistItem(_ item: WatchlistItem) {
+        let sql = """
+            INSERT INTO watchlist (id, symbol, name, added_at)
+            VALUES (?, ?, ?, ?)
+        """
+
+        var stmt: OpaquePointer?
+        if sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK {
+            sqlite3_bind_text(stmt, 1, item.id.uuidString, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(stmt, 2, item.symbol, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(stmt, 3, item.name, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(stmt, 4, ISO8601DateFormatter().string(from: item.addedAt), -1, SQLITE_TRANSIENT)
+
+            if sqlite3_step(stmt) == SQLITE_DONE {
+                self.objectWillChange.send()
+                self.watchlistItems.insert(item, at: 0)
+            }
+        }
+        sqlite3_finalize(stmt)
+    }
+
+    func deleteWatchlistItem(_ item: WatchlistItem) {
+        let sql = "DELETE FROM watchlist WHERE id = ?"
+        var stmt: OpaquePointer?
+        if sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK {
+            sqlite3_bind_text(stmt, 1, item.id.uuidString, -1, SQLITE_TRANSIENT)
+            if sqlite3_step(stmt) == SQLITE_DONE {
+                self.objectWillChange.send()
+                self.watchlistItems.removeAll { $0.id == item.id }
+            }
+        }
+        sqlite3_finalize(stmt)
+    }
+
+    private func watchlistItemFromStatement(_ stmt: OpaquePointer?) -> WatchlistItem {
+        let dateFormatter = ISO8601DateFormatter()
+
+        let id = UUID(uuidString: String(cString: sqlite3_column_text(stmt, 0))) ?? UUID()
+        let symbol = String(cString: sqlite3_column_text(stmt, 1))
+        let name = String(cString: sqlite3_column_text(stmt, 2))
+        let addedAt = dateFormatter.date(from: String(cString: sqlite3_column_text(stmt, 3))) ?? Date()
+
+        return WatchlistItem(
+            id: id,
+            symbol: symbol,
+            name: name,
+            addedAt: addedAt
+        )
     }
 
     // MARK: - Helper Functions

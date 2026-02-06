@@ -125,7 +125,7 @@ struct TransactionsView: View {
             Divider()
 
             // Summary
-            HStack(spacing: 24) {
+            HStack(spacing: Theme.Spacing.xxl) {
                 TransactionSummaryCard(
                     title: "Bought",
                     value: filteredTransactions.filter { $0.type == .buy }.reduce(0) { $0 + $1.totalAmount },
@@ -230,7 +230,7 @@ struct TransactionSummaryCard: View {
     let color: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             Text(title)
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -252,7 +252,7 @@ struct TransactionRowView: View {
     let asset: Asset?
 
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: Theme.Spacing.lg) {
             // Icon
             ZStack {
                 Circle()
@@ -264,11 +264,11 @@ struct TransactionRowView: View {
             }
 
             // Asset info
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 4) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                HStack(spacing: Theme.Spacing.xs) {
                     Text(transaction.type.displayName)
                         .font(.caption)
-                        .padding(.vertical, 2)
+                        .padding(.vertical, Theme.Spacing.xxs)
                         .frame(width: 58)
                         .background(Theme.TransactionColors.color(for: transaction.type).opacity(0.2))
                         .cornerRadius(Theme.CornerRadius.small)
@@ -283,7 +283,7 @@ struct TransactionRowView: View {
             Spacer()
 
             // Details
-            VStack(alignment: .trailing, spacing: 2) {
+            VStack(alignment: .trailing, spacing: Theme.Spacing.xxs) {
                 if transaction.type == .dividend || transaction.type == .interest {
                     Text(transaction.totalAmount, format: .currency(code: "USD"))
                         .fontWeight(.medium)
@@ -291,10 +291,10 @@ struct TransactionRowView: View {
                 } else {
                     Text("\(transaction.shares, specifier: "%.4f") @ \(transaction.pricePerShare, format: .currency(code: "USD"))")
                         .font(.subheadline)
+                    Text(transaction.totalAmount, format: .currency(code: "USD"))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
-                Text(transaction.totalAmount, format: .currency(code: "USD"))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
             }
 
             // Notes indicator
@@ -311,7 +311,7 @@ struct TransactionRowView: View {
                     .font(.caption)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Spacing.xs)
     }
 }
 
@@ -326,7 +326,7 @@ struct GroupedTransactionRowView: View {
     var body: some View {
         HStack(spacing: 0) {
             // Left side: Main transaction (BUY/SELL)
-            HStack(spacing: 16) {
+            HStack(spacing: Theme.Spacing.lg) {
                 // Icon
                 ZStack {
                     Circle()
@@ -338,11 +338,11 @@ struct GroupedTransactionRowView: View {
                 }
 
                 // Asset info with tag
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 4) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                    HStack(spacing: Theme.Spacing.xs) {
                         Text(transaction.type.displayName)
                             .font(.caption)
-                            .padding(.vertical, 2)
+                            .padding(.vertical, Theme.Spacing.xxs)
                             .frame(width: 58)
                             .background(Theme.TransactionColors.color(for: transaction.type).opacity(0.2))
                             .cornerRadius(Theme.CornerRadius.small)
@@ -361,22 +361,22 @@ struct GroupedTransactionRowView: View {
             Image(systemName: "arrow.left")
                 .foregroundColor(.secondary)
                 .font(.system(size: 12, weight: .semibold))
-                .padding(.horizontal, 12)
+                .padding(.horizontal, Theme.Spacing.md)
 
             Spacer()
 
             // Right side: Cash transaction (source of funds)
             if let linkedTx = linkedTransaction {
-                HStack(spacing: 8) {
+                HStack(spacing: Theme.Spacing.sm) {
                     // Cash info: CASH symbol first, then tag
-                    VStack(alignment: .trailing, spacing: 2) {
-                        HStack(spacing: 6) {
+                    VStack(alignment: .trailing, spacing: Theme.Spacing.xxs) {
+                        HStack(spacing: Theme.Spacing.sm) {
                             Text(linkedAsset?.symbol ?? "Cash")
                                 .fontWeight(.medium)
                             Text(linkedTx.type.displayName)
                                 .font(.caption)
-                                .padding(.horizontal, 5)
-                                .padding(.vertical, 2)
+                                .padding(.horizontal, Theme.Spacing.xs)
+                                .padding(.vertical, Theme.Spacing.xxs)
                                 .background(Theme.TransactionColors.color(for: linkedTx.type).opacity(0.2))
                                 .cornerRadius(Theme.CornerRadius.small)
                         }
@@ -402,10 +402,10 @@ struct GroupedTransactionRowView: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .frame(width: 85, alignment: .trailing)
-                .padding(.leading, 12)
+                .padding(.leading, Theme.Spacing.md)
 
             // Indicators
-            HStack(spacing: 4) {
+            HStack(spacing: Theme.Spacing.xs) {
                 if transaction.notes != nil {
                     Image(systemName: "note.text")
                         .foregroundColor(.secondary)
@@ -419,7 +419,7 @@ struct GroupedTransactionRowView: View {
             }
             .frame(width: 30)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Spacing.xs)
     }
 }
 
