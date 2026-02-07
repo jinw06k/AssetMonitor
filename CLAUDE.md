@@ -17,6 +17,7 @@ pkill -x "AssetMonitor"
 xcodebuild -project AssetMonitor.xcodeproj -scheme AssetMonitor -configuration Release build
 rm -rf /Applications/AssetMonitor.app
 cp -R ~/Library/Developer/Xcode/DerivedData/AssetMonitor-*/Build/Products/Release/AssetMonitor.app /Applications/
+xattr -cr /Applications/AssetMonitor.app
 open /Applications/AssetMonitor.app
 ```
 
